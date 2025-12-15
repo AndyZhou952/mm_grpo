@@ -1016,7 +1016,7 @@ class DiffusersActorRolloutRefWorker(Worker, DistProfilerExtension):
 
 
 class AsyncDiffusersActorRolloutRefWorker(DiffusersActorRolloutRefWorker):
-    @register(dispatch_mode=Dispatch.ONE_TO_ALL, execute_mode=Execute.RANK_ZERO)
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def get_params(self):
         base_sync_done = getattr(self, "base_sync_done", True)
         peft_config = None
@@ -1051,10 +1051,14 @@ class AsyncDiffusersActorRolloutRefWorker(DiffusersActorRolloutRefWorker):
                 )
                 for name, param in params.items()
             )
-        return per_tensor_param, peft_config
+        return {"params": per_tensor_param, "config": peft_config}
 
-    @register(dispatch_mode=Dispatch.ALL_TO_ALL)
-    async def update_weights(self, per_tensor_param, peft_config):
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    async def update_weights(self, params_with_config: dict):
+        per_tensor_param, peft_config = (
+            params_with_config["params"],
+            params_with_config["config"],
+        )
         await self.rollout.update_weights(
             per_tensor_param,
             peft_config=peft_config,

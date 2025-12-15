@@ -355,12 +355,13 @@ class RayDiffusionPPOTrainer:
 
         return gen_batch
 
-    def _gen_next_batch(self, gen_batch, reward_fn=None):
+    def _gen_next_batch(self, gen_batch, timing_raw, reward_fn=None):
         """
         Call parameter synchronization and asynchronous sequence generation.
         """
-        # sync weights from actor to rollout if actor and rollout do not share resource pool
-        update_weights(self.actor_rollout_wg, self.rollout_wg)
+        with marked_timer("update_weight", timing_raw, color="purple"):
+            # sync weights from actor to rollout if actor and rollout do not share resource pool
+            update_weights(self.actor_rollout_wg, self.rollout_wg)
 
         # apply async reward during rollout
         if self.config.actor_rollout_ref.rollout.with_reward:
@@ -433,7 +434,7 @@ class RayDiffusionPPOTrainer:
 
             if not self.async_rollout_manager:
                 test_output_gen_batch = self._gen_next_batch(
-                    test_gen_batch, reward_fn=self.compute_val_reward_async
+                    test_gen_batch, {}, reward_fn=self.compute_val_reward_async
                 )
                 if (
                     self.async_rollout_mode
@@ -925,7 +926,7 @@ class RayDiffusionPPOTrainer:
                 if is_first_step and self.one_step_off_policy:
                     # Start the first asynchronous generation task.
                     batch_data_future = self._gen_next_batch(
-                        gen_batch, self.compute_reward_async
+                        gen_batch, timing_raw, self.compute_reward_async
                     )
                     is_first_step = False
                     continue
@@ -941,11 +942,11 @@ class RayDiffusionPPOTrainer:
                             # update weights and async next generation
                             if not is_last_step:
                                 batch_data_future = self._gen_next_batch(
-                                    gen_batch, self.compute_reward_async
+                                    gen_batch, timing_raw, self.compute_reward_async
                                 )
                         elif not self.async_rollout_manager:
                             gen_batch_output = self._gen_next_batch(
-                                gen_batch, self.compute_reward_async
+                                gen_batch, timing_raw, self.compute_reward_async
                             )
                             # Currently, non-one-step-off async policy does not really run async rollout.
                             if self.async_rollout_mode:

@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ============================================================================
+from typing import Any
+
 from verl.single_controller.ray import RayWorkerGroup
 
 
@@ -20,5 +22,7 @@ def update_weights(actor_wg: RayWorkerGroup, rollout_wg: RayWorkerGroup):
     if actor_wg is rollout_wg:
         return
 
-    per_tensor_param, peft_config = actor_wg.get_params()
-    rollout_wg.update_weights(per_tensor_param, peft_config=peft_config)
+    params_with_config: tuple[dict[str, Any], ...] = actor_wg.get_params()
+    # all workers are expected to have the same parameters and configs under DP/FSDP.
+    # therefore, we use the parameters from rank 0, and distribute to all rollout workers.
+    rollout_wg.update_weights(params_with_config[0])
