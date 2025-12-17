@@ -3,3 +3,4 @@ diffusers
 transformers
 peft
 flashinfer-python
+verl>=0.6.1
