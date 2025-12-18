@@ -36,28 +36,25 @@ A fast and easy-to-use library to support RL training for multi-modal generative
 
 ### Installation
 
-**Requirements**
+#### Install from Source
 
-- Install the necessary packages:
-  ```bash
-  pip install -r requirements.txt
-  ```
+The latest version of `gerl` can be installed as follows:
 
-- Install the `verl` main branch:
-  ```bash
-  git clone https://github.com/volcengine/verl.git && cd verl && pip install -e .
-  ```
-
-**Environment Setup**
-
-Clone this repository:
 ```bash
-git clone https://github.com/leibniz-csi/mm_grpo.git && cd mm_grpo
-
-# Install other required packages for specific rewards, e.g., for the Paddle-OCR reward:
-# pip install paddlepaddle "paddleocr>=3.0" python-Levenshtein
+pip install git+https://github.com/leibniz-csi/mm_grpo.git
 ```
 
+#### Install from Local
+
+If you prefer to use the scripts under `examples/` directly, please clone the repository and install the package locally:
+
+```bash
+git clone https://github.com/leibniz-csi/mm_grpo.git && cd mm_grpo
+pip install -e . 
+
+# with paddleocr reward support
+# pip install -e .[paddleocr]
+```
 
 ### Quick Start
 
