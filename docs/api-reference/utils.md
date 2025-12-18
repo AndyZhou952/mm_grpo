@@ -31,13 +31,6 @@ API documentation for utility modules including reward scoring, dataset handling
       show_root_heading: true
       show_source: true
 
-## Checkpoint Management
-
-::: gerl.utils.checkpoint.fsdp_checkpoint_manager
-    options:
-      show_root_heading: true
-      show_source: true
-
 ## LoRA Utilities
 
 ::: gerl.utils.lora.lora
