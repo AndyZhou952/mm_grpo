@@ -97,7 +97,7 @@ actor_rollout_ref.async_strategy="one-step-off"
 | SD3.5-M | Flow-GRPO-Fast     | True | 3  | qwenvl-ocr-vllm*  | -   | 3 | 3 | 24      | 8 |  1e-4          | 33 |    1.42      | 3.06 | - |
 
 
-**\*Note**: `UnifiedReward-Think-qwen3vl-32b` model was used in reward computing.
+**\*Note**: `UnifiedReward-2.0-qwen3vl-32b` model was used in reward computing.
 
 - Validation reward curve：
 

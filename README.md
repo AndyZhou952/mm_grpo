@@ -25,7 +25,7 @@ A fast and easy-to-use library to support RL training for multi-modal generative
 ### Supported Rewards
 
 - [x] [PaddleOCR](https://arxiv.org/abs/2507.05595)
-- [x] [Qwen2.5VL-OCR](https://arxiv.org/abs/2502.13923)
+- [x] [QwenVL-OCR](https://arxiv.org/abs/2502.13923)
 - [x] [UnifiedReward](https://arxiv.org/abs/2503.05236)
 
 
@@ -82,6 +82,85 @@ bash examples/flowgrpo_trainer/run_sd3.sh
 bash examples/flowgrpo_trainer/run_sd3_fast.sh
 ```
 
+### Reward Instructions
+This repo supports multiple rule-based and model-based rewards (see [Supported Rewards](#supported-rewards)).
+
+#### Reward Usage
+Typical steps to use a reward:
+
+1. Install related dependencies and optionally launch any model server.
+
+- Model-based or rule-based reward (CPU only)
+
+  For example, to use the PaddleOCR reward, install related dependencies:
+  ```bash
+  pip install paddlepaddle "paddleocr>=3.0" python-Levenshtein
+  ```
+
+- Model-based reward with vllm online serving.
+
+  For example, to use QwenVL-OCR reward or UnifiedReward image reward, we should [install `vllm` package](https://docs.vllm.ai/en/stable/getting_started/installation/) and launch the online serving (bash example):
+
+  <details>
+    <summary>Environment variable names for vllm serving</summary>
+
+    To launch the vllm server, environment variables of url and model path should be set:
+    | Reward | URL to access | Model to use|
+    | --- | --- | --- |
+    | QwenVL-OCR | QWEN_VL_OCR_VLLM_URL | QWEN_VL_OCR_PATH |
+    | UnifiedReward | UNIFIED_REWARD_VLLM_URL | UNIFIED_REWARD_PATH |
+
+    Note: See `QwenVLOCRVLLMScorer` and `UnifiedRewardVLLMScorer` in [vllm.py](./gerl/utils/reward_score/vllm.py) for environment variable names and usage.
+
+  </details>
+
+  ```bash
+  # vllm installation, please refer to official installation for details
+  uv pip install vllm
+
+  # Launch vllm serving for Qwen2.5-VL-7B-Instruct
+  CUDA_VISIBLE_DEVICES=0 vllm serve ${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct --host localhost --port 9529
+  # Set access url and model name
+  export QWEN_VL_OCR_VLLM_URL=http://localhost:9529/v1
+  export QWEN_VL_OCR_PATH=${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct
+
+  # Launch vllm serving for UnifiedReward-2.0-qwen3vl-32b
+  CUDA_VISIBLE_DEVICES=1,2,3,4 vllm serve ${CHECKPOINT_HOME}/CodeGoat24/UnifiedReward-2.0-qwen3vl-32b \
+    --host localhost \
+    --served-model-name UnifiedReward \
+    --gpu-memory-utilization 0.9 \
+    --tensor-parallel-size 4 \
+    --port 8090
+  # Set access url and model name
+  export UNIFIED_REWARD_VLLM_URL=http://localhost:8090/v1
+  export UNIFIED_REWARD_PATH=UnifiedReward
+  ```
+
+
+
+2. Add training/validation reward names to training configuration:
+
+  - Single reward:
+    ```bash
+    python3 -m gerl.trainer.main_flowgrpo \
+        data.data_source=ocr \
+        data.reward_fn='["paddle-ocr"]' \
+        ...
+    ```
+
+  - Multiple rewards:
+    ```bash
+    python3 -m gerl.trainer.main_flowgrpo \
+        data.data_source=prompt \
+        data.reward_fn='["qwenvl-ocr-vllm"]' \ # proxy reward to use
+        data.val_reward_fn='["unified-reward-vllm", "qwenvl-ocr-vllm"]' \ # gold reward to use for validation set
+        ...
+    ```
+    Note: if validation reward `val_reward_fn` is not set, it defaults to training reward `reward_fn`. <br>
+    `data.data_source=prompt` is required for multi-reward.
+
+#### Reward Customization
+Please refer to [Customize Reward Function](./recipe/customize_reward/README.md) for details; it describes how to customize reward scorers step by step.
 
 ## Acknowledgement
 We appreciate the contributions of the following works:
