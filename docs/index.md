@@ -30,22 +30,9 @@ A fast and easy-to-use library to support RL training for multi-modal generative
 - [x] [QwenVL-OCR](https://arxiv.org/abs/2502.13923) - Vision-language model for OCR tasks
 - [x] [UnifiedReward](https://arxiv.org/abs/2503.05236) - Unified reward model for various tasks
 
-## Quick Start
+## Get Started
 
-Get started with MM-GRPO in minutes:
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Install verl
-git clone https://github.com/volcengine/verl.git && cd verl && pip install -e .
-
-# Run Flow-GRPO training
-bash examples/flowgrpo_trainer/run_sd3.sh
-```
-
-For detailed installation and usage instructions, see the [Installation Guide](installation.md) and [Quick Start Guide](quickstart.md).
+See the [Installation Guide](installation.md) and [Quick Start Guide](quickstart.md).
 
 ## Documentation Structure
 
