@@ -5,7 +5,7 @@ mm_grpo is a Python library that mainly contains the python implementations for 
 ## Prerequisites
 
 - OS: Linux
-- Python 3.12 or higher
+- Python 3.10 or higher
 - CUDA-capable GPU
 
 ## Installation

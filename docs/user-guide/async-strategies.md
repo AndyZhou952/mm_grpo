@@ -114,8 +114,8 @@ All experiments were conducted on *NVIDIA H800* GPUs using the OCR reward.
 
 | Model | Algorithm | Hybrid Engine | # Cards | Reward Fn | Async Strategy | # GPUs for Actor | # GPUs for Rollout | Batch Size | `rollout.n` | Learning Rate | # Val Samples | Throughput | # GPU Hour | Script |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SD3.5-M | Flow-GRPO-Fast | False | 3 | qwenvl-ocr-vllm* | one-step-off | 1 | 2 | 8 | 8 | 1e-4 | 32 | 1.07 | 2.04 | [run_sd3_fast_3p_a1_r2.sh](../../examples/flowgrpo_trainer/experimental/run_sd3_fast_3p_a1_r2.sh) |
-| SD3.5-M | Flow-GRPO-Fast | False | 3 | qwenvl-ocr-vllm* | one-step-off | 2 | 1 | 16 | 8 | 1e-4 | 32 | 1.25 | 3.39 | [run_sd3_fast_3p_a2_r1.sh](../../examples/flowgrpo_trainer/experimental/run_sd3_fast_3p_a2_r1.sh) |
+| SD3.5-M | Flow-GRPO-Fast | False | 3 | qwenvl-ocr-vllm* | one-step-off | 1 | 2 | 8 | 8 | 1e-4 | 32 | 1.07 | 2.04 | [run_sd3_fast_3p_a1_r2.sh](https://github.com/leibniz-csi/mm_grpo/blob/main/examples/flowgrpo_trainer/experimental/run_sd3_fast_3p_a1_r2.sh) |
+| SD3.5-M | Flow-GRPO-Fast | False | 3 | qwenvl-ocr-vllm* | one-step-off | 2 | 1 | 16 | 8 | 1e-4 | 32 | 1.25 | 3.39 | [run_sd3_fast_3p_a2_r1.sh](https://github.com/leibniz-csi/mm_grpo/blob/main/examples/flowgrpo_trainer/experimental/run_sd3_fast_3p_a2_r1.sh) |
 | SD3.5-M | Flow-GRPO-Fast | True | 3 | qwenvl-ocr-vllm* | - | 3 | 3 | 24 | 8 | 1e-4 | 33 | 1.42 | 3.06 | - |
 
 **\*Note**: `UnifiedReward-Think-qwen3vl-32b` model was used in reward computing.

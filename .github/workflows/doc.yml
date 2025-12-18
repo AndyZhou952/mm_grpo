@@ -9,7 +9,7 @@ on:
       - 'docs/**'
       - 'mkdocs.yml'
       - 'gerl/**'
-      - '.github/workflows/docs.yml'
+      - '.github/workflows/doc.yml'
   workflow_dispatch:
 
 permissions:
@@ -37,9 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install mkdocs-material
-          pip install mkdocstrings[python]
-          pip install pymdown-extensions
+          pip install .[docs]
       - name: Build documentation
         run: mkdocs build
 

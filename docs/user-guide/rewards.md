@@ -68,7 +68,7 @@ For rewards that use vLLM (QwenVL-OCR, UnifiedReward), you need to:
    | QwenVL-OCR | `QWEN_VL_OCR_VLLM_URL` | `QWEN_VL_OCR_PATH` |
    | UnifiedReward | `UNIFIED_REWARD_VLLM_URL` | `UNIFIED_REWARD_PATH` |
 
-   Note: See `QwenVLOCRVLLMScorer` and `UnifiedRewardVLLMScorer` in [vllm.py](../../gerl/utils/reward_score/vllm.py) for environment variable names and usage.
+   Note: See `QwenVLOCRVLLMScorer` and `UnifiedRewardVLLMScorer` in [vllm.py](https://github.com/leibniz-csi/mm_grpo/blob/main/gerl/utils/reward_score/vllm.py) for environment variable names and usage.
 
    **Example: Qwen2.5-VL-7B-Instruct for OCR**
    ```bash
