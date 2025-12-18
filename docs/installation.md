@@ -1,12 +1,12 @@
 # Installation
 
-mm_grpo is a Python library that supports the following GPU variants. The library itself mainly contains the python implementations for frameworks and models. This guide will help you install MM-GRPO and all its dependencies.
+mm_grpo is a Python library that mainly contains the python implementations for multimodal reinforcement learning frameworks and models. This guide will help you install MM-GRPO and all its dependencies.
 
 ## Prerequisites
 
 - OS: Linux
 - Python 3.12 or higher
-- CUDA-capable GPU (recommended)
+- CUDA-capable GPU
 
 ## Step 1: Clone the Repository
 
@@ -24,10 +24,15 @@ pip install -r requirements.txt
 ```
 
 This will install:
+
 - `datasets` - Dataset handling
+
 - `diffusers` - Diffusion model support
+
 - `transformers` - Transformer models
+
 - `peft` - Parameter-efficient fine-tuning
+
 - `flashinfer-python` - Efficient inference
 
 ## Step 3: Install verl
@@ -51,7 +56,7 @@ Depending on which reward functions you plan to use, you may need additional pac
 pip install paddlepaddle "paddleocr>=3.0" python-Levenshtein
 ```
 
-### Qwen2.5VL-OCR Reward
+### QwenVL-OCR Reward
 
 (FIXME) This reward uses vLLM for serving. Make sure you have vLLM-Omni installed (usually comes with verl dependencies).
 

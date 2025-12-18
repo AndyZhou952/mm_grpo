@@ -27,7 +27,7 @@ A fast and easy-to-use library to support RL training for multi-modal generative
 ## Supported Rewards
 
 - [x] [PaddleOCR](https://arxiv.org/abs/2507.05595) - OCR-based reward for text rendering tasks
-- [x] [Qwen2.5VL-OCR](https://arxiv.org/abs/2502.13923) - Vision-language model for OCR tasks
+- [x] [QwenVL-OCR](https://arxiv.org/abs/2502.13923) - Vision-language model for OCR tasks
 - [x] [UnifiedReward](https://arxiv.org/abs/2503.05236) - Unified reward model for various tasks
 
 ## Quick Start
@@ -78,5 +78,5 @@ We appreciate the contributions of the following works:
 
 ## License
 
-This project is licensed under the Apache License 2.0. See the [LICENSE](../LICENSE) file for details.
+This project is licensed under the Apache License 2.0. See the [LICENSE](https://github.com/leibniz-csi/mm_grpo/blob/main/LICENSE) file for details.
 

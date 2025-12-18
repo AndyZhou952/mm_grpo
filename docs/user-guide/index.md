@@ -1,4 +1,4 @@
-rehensive documentation on using MM-GRPO for RL training of multi-modal generative models.
+Comprehensive documentation on using MM-GRPO for RL training of multi-modal generative models.
 
 ## Overview
 

@@ -38,10 +38,15 @@ bash examples/flowgrpo_trainer/run_sd3.sh
 ```
 
 This script trains SD3.5-M with:
+
 - Flow-GRPO algorithm
+
 - PaddleOCR reward
+
 - 8 GPUs
+
 - Batch size 64
+
 - Learning rate 3e-4
 
 ### Flow-GRPO-Fast
@@ -57,15 +62,21 @@ bash examples/flowgrpo_trainer/run_sd3_fast.sh
 ### Console Output
 
 The training process prints:
+
 - Training metrics (loss, reward, etc.)
+
 - Validation metrics
+
 - Checkpoint saves
 
 ### WandB Integration
 
 If WandB is configured (`trainer.logger='["console", "wandb"]'`), you can monitor:
+
 - Training curves
+
 - Validation rewards
+
 - Generated samples
 
 Access your dashboard at [wandb.ai](https://wandb.ai).

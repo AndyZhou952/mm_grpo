@@ -15,8 +15,11 @@ Your support can take many forms:
 ## Finding Issues to Contribute
 
 Looking for ways to dive in? Check out:
+
 - [Roadmap Issues](https://github.com/leibniz-csi/mm_grpo/issues?q=is%3Aissue+state%3Aopen+label%3Aroadmap)
+
 - [Good First Issues](https://github.com/leibniz-csi/mm_grpo/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+
 - [Bug Reports](https://github.com/leibniz-csi/mm_grpo/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 
 ## Getting Started

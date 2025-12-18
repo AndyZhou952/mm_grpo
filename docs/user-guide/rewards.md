@@ -8,24 +8,15 @@ MM-GRPO supports multiple reward functions for evaluating generated images. This
 
 OCR-based reward using PaddleOCR for text recognition accuracy.
 
-**Use Case**: Text rendering tasks, OCR accuracy optimization
-
 **Configuration**:
 ```yaml
 data:
   reward_fn: ["paddle-ocr"]
 ```
 
-**Installation**:
-```bash
-pip install paddlepaddle "paddleocr>=3.0" python-Levenshtein
-```
-
 ### QwenVL-OCR
 
-Vision-language model-based OCR reward using Qwen2.5-VL (Qwen3-VL) via vLLM.
-
-**Use Case**: High-accuracy OCR tasks, when PaddleOCR is insufficient
+Vision-language model-based OCR reward using Qwen-VL model series via vLLM.
 
 **Configuration**:
 ```yaml
@@ -33,110 +24,116 @@ data:
   reward_fn: ["qwenvl-ocr-vllm"]
 ```
 
-**Requirements**:
-- vLLM server running (if using remote serving)
-
 ### UnifiedReward
 
 Unified reward model supporting multiple tasks and preferences.
 
-**Use Case**: General preference alignment, multi-objective optimization
-
 **Configuration**:
 ```yaml
 data:
-  reward_fn: ["unified-reward"]
+  reward_fn: ["unified-reward-vllm"]
 ```
 
-## Using Multiple Rewards
+## Reward Usage
 
-You can combine multiple reward functions:
+Typical steps to use a reward:
 
-```yaml
-data:
-  reward_fn: ["paddle-ocr", "unified-reward"]
+### 1. Install Dependencies and Launch Model Servers
+
+#### Model-based or Rule-based Reward (CPU only)
+
+For example, to use the PaddleOCR reward, install related dependencies:
+
+```bash
+pip install paddlepaddle "paddleocr>=3.0" python-Levenshtein
 ```
 
-Rewards are combined (currently averaged, weights may be added in future).
+#### Model-based Reward with vLLM Online Serving
 
-## Custom Reward Functions
+For rewards that use vLLM (QwenVL-OCR, UnifiedReward), you need to:
 
-MM-GRPO provides a framework for creating custom reward functions.
+1. Install vLLM package:
+   ```bash
+   # vLLM installation, please refer to official installation for details
+   uv pip install vllm
+   ```
+   Or follow the [official vLLM installation guide](https://docs.vllm.ai/en/stable/getting_started/installation/).
 
-### Step 1: Create Reward Scorer
+2. Launch vLLM serving and set environment variables:
 
-Create a new file `gerl/utils/reward_score/custom_reward.py`:
+   To launch the vLLM server, environment variables of URL and model path should be set:
 
-```python
-from .scorer import Scorer
-from typing import List, Optional, Union
-import torch
-from PIL import Image
-import numpy as np
+   | Reward | URL to access | Model to use |
+   | --- | --- | --- |
+   | QwenVL-OCR | `QWEN_VL_OCR_VLLM_URL` | `QWEN_VL_OCR_PATH` |
+   | UnifiedReward | `UNIFIED_REWARD_VLLM_URL` | `UNIFIED_REWARD_PATH` |
 
-class CustomRewardScorer(Scorer):
-    """Custom reward scorer."""
-    
-    def __init__(self):
-        """Initialize your reward model/scorer here."""
-        # Load models, initialize components
-        pass
-    
-    @torch.no_grad()
-    async def __call__(
-        self,
-        images: Union[List[Image.Image], np.ndarray, torch.Tensor],
-        prompts: Optional[List[str]] = None,
-    ) -> List[float]:
-        """
-        Compute rewards for images.
-        
-        Args:
-            images: Generated images
-            prompts: Ground-truth prompts (if applicable)
-        
-        Returns:
-            List of reward values (one per image)
-        """
-        # Compute rewards
-        rewards = []
-        for image in images:
-            # Your reward computation logic
-            reward = self.compute_reward(image, prompt)
-            rewards.append(reward)
-        return rewards
-    
-    def compute_reward(self, image, prompt):
-        """Your reward computation logic."""
-        # Implement your reward function
-        return 0.0
-```
+   Note: See `QwenVLOCRVLLMScorer` and `UnifiedRewardVLLMScorer` in [vllm.py](../../gerl/utils/reward_score/vllm.py) for environment variable names and usage.
 
-### Step 2: Register Reward
+   **Example: Qwen2.5-VL-7B-Instruct for OCR**
+   ```bash
+   # Launch vLLM serving
+   CUDA_VISIBLE_DEVICES=0 vllm serve ${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct --host localhost --port 9529
+   
+   # Set access URL and model name
+   export QWEN_VL_OCR_VLLM_URL=http://localhost:9529/v1
+   export QWEN_VL_OCR_PATH=${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct
+   ```
 
-Add to `gerl/utils/reward_score/multi.py`:
+   **Example: UnifiedReward-2.0-qwen3vl-32b**
+   ```bash
+   # Launch vLLM serving
+   CUDA_VISIBLE_DEVICES=1,2,3,4 vllm serve ${CHECKPOINT_HOME}/CodeGoat24/UnifiedReward-2.0-qwen3vl-32b \
+     --host localhost \
+     --served-model-name UnifiedReward \
+     --gpu-memory-utilization 0.9 \
+     --tensor-parallel-size 4 \
+     --port 8090
+   
+   # Set access URL and model name
+   export UNIFIED_REWARD_VLLM_URL=http://localhost:8090/v1
+   export UNIFIED_REWARD_PATH=UnifiedReward
+   ```
 
-```python
-AVAILABLE_SCORERS = {
-    # ... existing rewards ...
-    "custom-reward": ("custom_reward", "CustomRewardScorer"),
-}
-```
+### 2. Add Reward Names to Training Configuration
 
-### Step 3: Use in Configuration
-
-```yaml
-data:
-  reward_fn: ["custom-reward"]
-```
-
-Or via command line:
+#### Single Reward
 
 ```bash
 python3 -m gerl.trainer.main_flowgrpo \
-    data.reward_fn='["custom-reward"]'
+    data.data_source=ocr \
+    data.reward_fn='["paddle-ocr"]' \
+    ...
 ```
 
-## Testing Reward Functions
+#### Multiple Rewards
 
-Before applying your custom reward in training, create a unit test for your scorer and add it to `tests/reward_score/run_reward_fns.py` and `tests/reward_score/run_reward_fns.sh`.
+You can use different rewards for training and validation:
+
+```bash
+python3 -m gerl.trainer.main_flowgrpo \
+    data.data_source=prompt \
+    data.reward_fn='["qwenvl-ocr-vllm"]' \  # proxy reward to use for training
+    data.val_reward_fn='["unified-reward-vllm", "qwenvl-ocr-vllm"]' \  # gold reward to use for validation set
+    ...
+```
+
+**Notes**:
+- If validation reward `val_reward_fn` is not set, it defaults to training reward `reward_fn`
+- `data.data_source=prompt` is required when using multiple rewards
+- Rewards are combined (currently averaged, weights may be added in future)
+
+## Custom Reward Functions
+
+MM-GRPO provides a framework for creating custom reward functions. Please refer to [Customize Reward Function](https://github.com/leibniz-csi/mm_grpo/tree/main/recipe/customize_reward) for detailed step-by-step instructions on how to customize reward scorers.
+
+The customization process involves:
+
+1. **Create Reward Scorer**: Implement a scorer class inheriting from `Scorer`
+2. **Register Reward**: Add your scorer to `gerl/utils/reward_score/multi.py`
+3. **Use in Configuration**: Reference your reward in training configuration
+4. **Test**: Create unit tests before using in training
+
+See the [recipe documentation](https://github.com/leibniz-csi/mm_grpo/tree/main/recipe/customize_reward/README.md) for complete examples including:
+- Model-based or rule-based rewards (CPU only)
+- API-serving model-based rewards (vLLM, SGLang)
