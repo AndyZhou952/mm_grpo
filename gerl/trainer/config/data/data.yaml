@@ -29,6 +29,10 @@ data_source: ocr
 # Support multiple reward functions. TODO: add weights?
 reward_fn: ["paddle-ocr"]
 
+# The list of reward functions used for the validation.
+# If it is None, use reward_fn by default
+val_reward_fn: null
+
 # reward model type
 reward_model_style: model
 

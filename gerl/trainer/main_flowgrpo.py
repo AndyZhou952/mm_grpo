@@ -328,12 +328,14 @@ class TaskRunner:
             config,
             None,
             num_examine=0,
+            validation=False,
             **config.reward_model.get("reward_kwargs", {}),
         )
         val_reward_fn = load_reward_manager(
             config,
             None,
             num_examine=1,
+            validation=True,
             **config.reward_model.get("reward_kwargs", {}),
         )
 

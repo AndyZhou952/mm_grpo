@@ -112,7 +112,11 @@ def get_custom_reward_fn(config: DictConfig) -> Optional[RawRewardFn]:
 
 
 def load_reward_manager(
-    config: DictConfig, tokenizer: Any, num_examine: int, **reward_kwargs: Any
+    config: DictConfig,
+    tokenizer: Any,
+    num_examine: int,
+    validation: bool = False,
+    **reward_kwargs: Any,
 ) -> AbstractRewardManager:
     """
     Load and initialize a reward manager based on the configuration.
@@ -121,6 +125,7 @@ def load_reward_manager(
         config: PPO trainer configuration object containing reward_model fields.
         tokenizer: Tokenizer object used for processing text.
         num_examine: Number of samples to examine.
+        validation: Whether it is for validation or not.
         **reward_kwargs: Additional keyword arguments for the reward manager.
 
     Returns:
@@ -159,12 +164,17 @@ def load_reward_manager(
             final_compute_score = DefaultScorer()
 
     # Instantiate and return the reward manager with the specified parameters
+    if validation:
+        reward_fn = config.data.get("val_reward_fn", config.data.reward_fn)
+    else:
+        reward_fn = config.data.reward_fn
+
     return reward_manager_cls(
         tokenizer=tokenizer,
         num_examine=num_examine,
         compute_score=final_compute_score,
         reward_fn_key=config.data.reward_fn_key,
-        reward_fn=config.data.reward_fn,
+        reward_fn=reward_fn,
         **reward_kwargs,
     )
 

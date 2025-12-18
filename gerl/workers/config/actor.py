@@ -55,6 +55,7 @@ class DiffusionActorConfig(BaseConfig):
         ppo_micro_batch_size_per_gpu (int): Micro-batch size per GPU for PPO training.
         shuffle_micro_batch (bool): Whether to shuffle micro-batches during training.
         clip_ratio (float): PPO clipping ratio for policy loss.
+        clip_max (float): Maximum absolute value for advantage clipping.
         policy_loss (PolicyLossConfig): Configuration for policy loss computation.
         use_kl_loss (bool): Whether to use KL divergence loss.
         kl_loss_coef (float): KL divergence loss coefficient.

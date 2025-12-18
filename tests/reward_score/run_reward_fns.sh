@@ -19,11 +19,11 @@ This script tests different reward scorers
 # put images "assets/good.jpg", "assets/fair.jpg", "assets/poor.jpg", "assets/ocr.jpg"
 
 # if use local vllm server:
-# CUDA_VISIBLE_DEVICES=0 vllm serve ${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct --host 0.0.0.0 --port 9529
-export QWEN_VL_OCR_VLLM_URL=http://0.0.0.0:9529/v1
+# CUDA_VISIBLE_DEVICES=0 vllm serve ${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct --host localhost --port 9529
+export QWEN_VL_OCR_VLLM_URL=http://localhost:9529/v1
 export QWEN_VL_OCR_PATH=${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct
-# CUDA_VISIBLE_DEVICES=0,1,2,3 vllm serve ${CHECKPOINT_HOME}/CodeGoat24/UnifiedReward-Think-qwen3vl-8b \
-#     --host 0.0.0.0 \
+# CUDA_VISIBLE_DEVICES=0,1,2,3 vllm serve ${CHECKPOINT_HOME}/CodeGoat24/UnifiedReward-2.0-qwen3vl-8b \
+#     --host localhost \
 #     --trust-remote-code \
 #     --served-model-name UnifiedReward \
 #     --gpu-memory-utilization 0.9 \
@@ -31,7 +31,7 @@ export QWEN_VL_OCR_PATH=${CHECKPOINT_HOME}/Qwen/Qwen2.5-VL-7B-Instruct
 #     --pipeline-parallel-size 1 \
 #     --limit-mm-per-prompt.image 32 \
 #     --port 8090
-export UNIFIED_REWARD_VLLM_URL=http://0.0.0.0:8090/v1
+export UNIFIED_REWARD_VLLM_URL=http://localhost:8090/v1
 export UNIFIED_REWARD_PATH=UnifiedReward
 
 python -m tests.reward_score.run_reward_fns
