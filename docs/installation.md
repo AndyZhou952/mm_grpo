@@ -48,21 +48,7 @@ cd ..
 
 ## Step 4: Install Reward-Specific Packages (Optional)
 
-Depending on which reward functions you plan to use, you may need additional packages:
-
-### PaddleOCR Reward
-
-```bash
-pip install paddlepaddle "paddleocr>=3.0" python-Levenshtein
-```
-
-### QwenVL-OCR Reward
-
-(FIXME) This reward uses vLLM for serving. Make sure you have vLLM-Omni installed (usually comes with verl dependencies).
-
-### UnifiedReward
-
-(FIXME) Check the UnifiedReward documentation for specific requirements.
+Depending on which reward functions you plan to use, you may need additional packages. For detailed installation instructions for each reward type (PaddleOCR, QwenVL-OCR, UnifiedReward), see the [Reward Usage](user-guide/rewards.md#reward-usage) section in the User Guide.
 
 ## Step 5: Verify Installation
 
